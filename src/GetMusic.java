@@ -3,6 +3,7 @@ import org.jsoup.*;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 
 
@@ -11,13 +12,11 @@ public class GetMusic {
 	public static void main(String[] args) {
 		
 		new MainWindow();
-		DbConnect db = new DbConnect(); 
-		Connection conn = db.Connect();
 		
 	}
 	
 	//get mixtapes from HNHH
-	public static Elements getMixtapesHNHH() {
+	public static Elements getMixtapesHnHH() {
 		Elements vals = new Elements(); 
 		try {
 			Document doc = Jsoup.connect("http://www.hotnewhiphop.com/mixtapes/").get();
@@ -30,7 +29,7 @@ public class GetMusic {
 	}
 	
 	//get songs from HNHH
-	public static Elements getSongs() {
+	public static Elements getSongsHnHH() {
 		Elements vals = new Elements(); 
 		try {
 			Document doc = Jsoup.connect("http://www.hotnewhiphop.com/songs/").get();
