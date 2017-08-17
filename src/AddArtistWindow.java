@@ -1,7 +1,6 @@
 import java.awt.Font;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
@@ -11,7 +10,6 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowEvent;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -21,7 +19,7 @@ public class AddArtistWindow extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
+	//private JPanel contentPane;
 	private JTextField textField;
 
 	public AddArtistWindow() {
@@ -54,11 +52,12 @@ public class AddArtistWindow extends JFrame {
 					stmt.executeUpdate("INSERT into artists (artist) value (\"" + textField.getText() + "\")");
 					setVisible(false);
 					MainWindow.refreshArtists();
+					conn.close();
 					dispose(); 
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				} 
-			
+				
 				
 			}
 		});

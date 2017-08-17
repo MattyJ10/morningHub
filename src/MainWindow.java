@@ -7,12 +7,12 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.Statement;
 
 import javax.swing.JScrollPane;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import java.awt.FlowLayout;
 import javax.swing.JTabbedPane;
 import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
@@ -22,13 +22,10 @@ import java.sql.SQLException;
 
 import javax.swing.ListSelectionModel;
 import java.awt.Color;
-import javax.swing.JLabel;
 import javax.swing.border.LineBorder;
-import java.awt.SystemColor;
 import javax.swing.SwingConstants;
 import javax.swing.JCheckBox;
 
-//NEXT STEP, CREATE NEW WINDOW TO ADD A NEW ARTIST TO YOUR LIST
 
 public class MainWindow {
 
@@ -76,8 +73,9 @@ public class MainWindow {
 		artistList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		artistList.setModel(favoriteArtists);
 		artistPane.setViewportView(artistList);
+		artistList.setPreferredSize(new Dimension(400, 100));
 		
-		JButton addArtistButton = new JButton("+");
+		JButton addArtistButton = new JButton("Add");
 		addArtistButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -131,10 +129,14 @@ public class MainWindow {
 				DefaultListModel<String> items = new DefaultListModel<String>();
 				
 				if (chckbxHnhh.isSelected() && chckbxMixtapes.isSelected()) {
+					items.removeAllElements();
 					values = GetMusic.getMixtapesHnHH();
 					outputMixtapesHnHH(items, values); 
-				} else if (chckbxHnhh.isSelected() && chckbxSongs.isSelected()) {
-					values = GetMusic.getSongsHnHH(); 
+				}
+				if (chckbxHnhh.isSelected() && chckbxSongs.isSelected()) {
+					items.removeAllElements();
+					values = GetMusic.getSongsHnHH();
+					outputSongsHnHH(items, values); 
 					//need to make songs show up. 
 				}
 				
@@ -142,6 +144,31 @@ public class MainWindow {
 			}
 		});
 		hnhhPane.setColumnHeaderView(btnNewButton);
+		
+		JButton btnNewButton_1 = new JButton("Remove");
+		btnNewButton_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				DbConnect db = new DbConnect(); 
+				Connection conn = (Connection) db.Connect();
+				try {
+					
+					//DELETE FROM orders WHERE id_users = 1 AND id_product = 2 LIMIT 1
+					String query = "DELETE FROM artists WHERE artist = '" + artistList.getSelectedValue() + "' LIMIT 1"; 
+					PreparedStatement preparedStmt = (PreparedStatement) conn.prepareStatement(query);
+					preparedStmt.execute(); 
+					favoriteArtists.removeElement(artistList.getSelectedValue()); 
+					refreshArtists(); 
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} 
+				
+			}
+		});
+		btnNewButton_1.setForeground(new Color(255, 0, 0));
+		btnNewButton_1.setBounds(157, 283, 260, 29);
+		musicPanel.add(btnNewButton_1);
 		
 		
 		//news tab
@@ -167,28 +194,31 @@ public class MainWindow {
 			}
 		}
 		System.out.println(favoriteArtists); 
+		conn.close();
 		}
-	
-	public void refreshChecks(JCheckBox box1, JCheckBox box2) {
-		if (box1.isSelected()) {
-			box2.setSelected(false);
-		}
-	}
 	
 	public void outputMixtapesHnHH(DefaultListModel<String> items, Elements values) {
 		for (Element element: values) {
+			System.out.println();
 			String artist = element.text(); 
 			if (favoriteArtists.contains(artist)){
-				//need to generalize this based on which boxes are checked. -> create a function for each case and call it when needed. 
 				items.addElement("There is a new mixtape by " + artist); 
 				items.addElement("www.HotNewHipHop.com" + element.parent().siblingElements().first().attr("href"));
 			}
 		}
 	}
 	
-	//outputSongsHnHH
-	//outputMixtapesDatPiff
-	//outputSongsDatPiff
-	
+	public void outputSongsHnHH(DefaultListModel<String> items, Elements values) {
+		for (Element element: values) {
+			System.out.println(); 
+			String artist = element.text(); 
+			if (favoriteArtists.contains(artist)) {
+				
+				items.addElement("There is a new song by " + artist); 
+				items.addElement("www.HotNewHipHop.com" + element.parent().siblingElements().first().attr("href"));
+				
+			}
+		}
 	}
+}
 

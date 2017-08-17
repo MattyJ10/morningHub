@@ -2,8 +2,6 @@ import java.io.IOException;
 import org.jsoup.*;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 
 
