@@ -48,7 +48,6 @@ public class AddArtistWindow extends JFrame {
 				Connection conn = (Connection) db.Connect(); 
 				try {
 					Statement stmt = conn.createStatement();
-					//INSERT into artists (artist) value ("test"); 
 					stmt.executeUpdate("INSERT into artists (artist) value (\"" + textField.getText() + "\")");
 					setVisible(false);
 					MainWindow.refreshArtists();

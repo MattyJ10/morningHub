@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.sql.SQLException;
+
 import org.jsoup.*;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -7,7 +9,7 @@ import org.jsoup.select.Elements;
 
 public class GetMusic {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException {
 		
 		new MainWindow();
 		
