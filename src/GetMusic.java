@@ -11,6 +11,7 @@ public class GetMusic {
 
 	public static void main(String[] args) throws SQLException {
 		
+		getMixtapesDatpiff(); 
 		new MainWindow();
 		
 	}
@@ -39,4 +40,30 @@ public class GetMusic {
 		}
 		return vals; 
 	}
+	
+	public static Elements getMixtapesDatpiff() {
+		Elements vals = new Elements(); 
+		Document doc;
+		try {
+			doc = Jsoup.connect("http://www.datpiff.com/mixtapes").get();
+			vals = doc.getElementsByClass("artist"); 
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		return vals; 
+		
+	}
+	/* Songs not supported greatly on Datpiff
+	public static Elements getSongsDatpiff() {
+		Elements vals = new Elements(); 
+		try {
+			Document doc = Jsoup.connect("http://www.datpiff.com/singles").get();
+			//vals = doc.g
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return vals; 
+	}*/
 }

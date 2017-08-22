@@ -1,16 +1,12 @@
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
-
 import java.awt.Dimension;
 import java.awt.EventQueue;
-
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.Statement;
-
 import javax.swing.JScrollPane;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -20,17 +16,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import javax.swing.ListSelectionModel;
 import java.awt.Color;
 import javax.swing.border.LineBorder;
-import javax.swing.SwingConstants;
-import javax.swing.JCheckBox;
 import javax.swing.ScrollPaneConstants;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.BoxLayout;
-
+import java.awt.SystemColor;
 
 public class MainWindow {
 
@@ -56,6 +49,8 @@ public class MainWindow {
 		
 		//Set up overall frame
 		frame = new JFrame();
+		frame.getContentPane().setBackground(SystemColor.activeCaptionText);
+		frame.setBackground(Color.RED);
 		frame.setBounds(100, 100, 900, 700);
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -67,54 +62,32 @@ public class MainWindow {
 		frame.getContentPane().add(tabbedPane);
 		tabbedPane.setPreferredSize(new Dimension(900, 650));
 		
+		
 		//Music tab
 		JPanel musicPanel = new JPanel();
+		musicPanel.setBackground(Color.BLACK);
 		musicPanel.setBorder(new LineBorder(new Color(0, 0, 0), 3, true));
 		tabbedPane.addTab("Music", null, musicPanel, null);
 		musicPanel.setLayout(null);
 		
-		JPanel checksPanel = new JPanel();
-		checksPanel.setForeground(new Color(51, 204, 255));
-		checksPanel.setBounds(175, 296, 329, 200);
-		checksPanel.setMaximumSize(new Dimension(200, 200));
-		musicPanel.add(checksPanel);
-		checksPanel.setLayout(new BoxLayout(checksPanel, BoxLayout.X_AXIS));
-		
-
-		JCheckBox chckbxSongs = new JCheckBox("Songs");
-		checksPanel.add(chckbxSongs);
-		chckbxSongs.setHorizontalAlignment(SwingConstants.CENTER);
-		
-		JCheckBox chckbxDatpiff = new JCheckBox("DatPiff");
-		checksPanel.add(chckbxDatpiff);
-		chckbxDatpiff.setHorizontalAlignment(SwingConstants.CENTER);
-		
-		JCheckBox chckbxHnhh = new JCheckBox("HnHH");
-		checksPanel.add(chckbxHnhh);
-		chckbxHnhh.setSelected(true);
-		chckbxHnhh.setHorizontalAlignment(SwingConstants.CENTER);
-		
-		JCheckBox chckbxMixtapes = new JCheckBox("Mixtapes");
-		checksPanel.add(chckbxMixtapes);
-		chckbxMixtapes.setSelected(true);
-		chckbxMixtapes.setHorizontalAlignment(SwingConstants.CENTER);
-		
 		JScrollPane artistPane = new JScrollPane();
-		artistPane.setBounds(175, 47, 329, 200);
+		artistPane.setBackground(Color.GRAY);
+		artistPane.setBounds(285, 374, 329, 200);
 		artistPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		artistPane.setMaximumSize(new Dimension(100, 200));
 		musicPanel.add(artistPane);
 		artistPane.setMinimumSize(new Dimension(0, 0));
 		
 		JList<String> artistList = new JList<String>(favoriteArtists);
+		artistList.setForeground(Color.WHITE);
 		artistPane.setViewportView(artistList);
-		artistList.setBackground(new Color(255, 255, 255));
+		artistList.setBackground(Color.GRAY);
 		artistList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
-		System.out.println("initialize: " + favoriteArtists); 
-		
 		JButton addArtistButton = new JButton("Add");
+		addArtistButton.setBackground(Color.GRAY);
 		artistPane.setColumnHeaderView(addArtistButton);
+		addArtistButton.setOpaque(true);
 		addArtistButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -124,41 +97,31 @@ public class MainWindow {
 			}
 		});
 		
-		addArtistButton.setForeground(new Color(0, 255, 0));
+		addArtistButton.setForeground(new Color(0, 153, 0));
 		
 		JScrollPane musicPane = new JScrollPane();
-		musicPane.setBounds(516, 6, 347, 592);
+		musicPane.setBackground(Color.GRAY);
+		musicPane.setBounds(160, 6, 554, 367);
 		musicPanel.add(musicPane);
 		musicPane.setPreferredSize(new Dimension(300, 400));
 		
 		JList<String> musicList = new JList<String>();
+		musicList.setBorder(new LineBorder(SystemColor.menu, 1, true));
+		musicList.setForeground(Color.WHITE);
+		musicList.setBackground(Color.GRAY);
 		musicPane.setViewportView(musicList);
 		
 		JButton refreshButton = new JButton("Refresh");
-		refreshButton.setForeground(new Color(30, 144, 255));
+		refreshButton.setOpaque(true);
+		refreshButton.setBackground(Color.GRAY);
+		refreshButton.setForeground(new Color(0, 153, 0));
 		refreshButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				Elements values = new Elements(); 
 				DefaultListModel<String> items = new DefaultListModel<String>();
 				
-				if (chckbxHnhh.isSelected() && chckbxMixtapes.isSelected()) {
-					values = GetMusic.getMixtapesHnHH();
-					outputMixtapesHnHH(items, values); 
-				}
-				if (chckbxHnhh.isSelected() && chckbxSongs.isSelected()) {
-					items.removeAllElements();
-					values = GetMusic.getSongsHnHH();
-					outputSongsHnHH(items, values); 
-				}
-				if (chckbxHnhh.isSelected() && chckbxSongs.isSelected() && chckbxMixtapes.isSelected()) {
-					items.removeAllElements();
-					values = GetMusic.getSongsHnHH();
-					outputSongsHnHH(items, values);
-					values = GetMusic.getMixtapesHnHH();
-					outputMixtapesHnHH(items, values); 
-				}
-				
+				outputAll(items, values); 
 				
 				musicList.setModel(items);
 			}
@@ -166,7 +129,8 @@ public class MainWindow {
 		musicPane.setColumnHeaderView(refreshButton);
 		
 		JButton removeArtistButton = new JButton("Remove");
-		removeArtistButton.setBounds(175, 244, 314, 29);
+		removeArtistButton.setBackground(Color.GRAY);
+		removeArtistButton.setBounds(285, 575, 314, 29);
 		musicPanel.add(removeArtistButton);
 		removeArtistButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -184,7 +148,8 @@ public class MainWindow {
 					PreparedStatement preparedStmt = (PreparedStatement) conn.prepareStatement(query);
 					preparedStmt.execute(); 
 					favoriteArtists.removeElement(artistList.getSelectedValue()); 
-					refreshArtists(); 
+					refreshArtists();
+					conn.close(); 
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -224,7 +189,6 @@ public class MainWindow {
 	
 	public void outputMixtapesHnHH(DefaultListModel<String> items, Elements values) {
 		for (Element element: values) {
-			System.out.println();
 			String artist = element.text(); 
 			if (favoriteArtists.contains(artist)){
 				items.addElement("There is a new mixtape by " + artist); 
@@ -235,7 +199,6 @@ public class MainWindow {
 	
 	public void outputSongsHnHH(DefaultListModel<String> items, Elements values) {
 		for (Element element: values) {
-			System.out.println(); 
 			String artist = element.text(); 
 			if (favoriteArtists.contains(artist)) {
 				
@@ -244,6 +207,27 @@ public class MainWindow {
 				
 			}
 		}
+	}
+	
+	public void outputMixtapesDatpiff(DefaultListModel<String> items, Elements values) {
+		for (Element element: values) {
+			String artist = element.text(); 
+			if (favoriteArtists.contains(artist)) {
+				items.addElement("There is a new mixtape by " + artist);
+				items.addElement("www.Datpiff.com" + element.parent().child(0).attr("href")); 
+			}
+		}
+	}
+	
+	public void outputAll(DefaultListModel<String> items, Elements values) {
+
+		values = GetMusic.getMixtapesHnHH(); 
+		outputMixtapesHnHH(items, values); 
+		values = GetMusic.getSongsHnHH(); 
+		outputSongsHnHH(items, values); 
+		values = GetMusic.getMixtapesDatpiff();
+		outputMixtapesDatpiff(items, values); 
+		
 	}
 }
 
