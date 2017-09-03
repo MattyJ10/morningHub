@@ -10,9 +10,9 @@ import org.jsoup.select.Elements;
 public class GetMusic {
 
 	public static void main(String[] args) throws SQLException {
-		
 		getMixtapesDatpiff(); 
 		new MainWindow();
+		
 		
 	}
 	
@@ -20,7 +20,8 @@ public class GetMusic {
 	public static Elements getMixtapesHnHH() {
 		Elements vals = new Elements(); 
 		try {
-			Document doc = Jsoup.connect("http://www.hotnewhiphop.com/mixtapes/").get();
+			//Need to revisit this (.validateTLSCertificates(false)) because cert validation is needed for live version
+			Document doc = Jsoup.connect("http://www.hotnewhiphop.com/mixtapes/").validateTLSCertificates(false).get();
 			vals = doc.getElementsByClass("default-artist");
 			
 		} catch (IOException e) {
@@ -33,7 +34,8 @@ public class GetMusic {
 	public static Elements getSongsHnHH() {
 		Elements vals = new Elements(); 
 		try {
-			Document doc = Jsoup.connect("http://www.hotnewhiphop.com/songs/").get();
+			//Need to revisit this (.validateTLSCertificates(false)) because cert validation is needed for live version
+			Document doc = Jsoup.connect("http://www.hotnewhiphop.com/songs/").validateTLSCertificates(false).get();
 			vals = doc.getElementsByClass("default-artist"); 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -45,7 +47,8 @@ public class GetMusic {
 		Elements vals = new Elements(); 
 		Document doc;
 		try {
-			doc = Jsoup.connect("http://www.datpiff.com/mixtapes").get();
+			//Need to revisit this (.validateTLSCertificates(false)) because cert validation is needed for live version
+			doc = Jsoup.connect("http://www.datpiff.com/mixtapes").validateTLSCertificates(false).get();
 			vals = doc.getElementsByClass("artist"); 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

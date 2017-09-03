@@ -14,10 +14,16 @@ import javax.swing.JTabbedPane;
 import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.ListSelectionModel;
 import java.awt.Color;
+import java.awt.Desktop;
+
 import javax.swing.border.LineBorder;
 import javax.swing.ScrollPaneConstants;
 
@@ -31,26 +37,26 @@ public class MainWindow {
 	static DefaultListModel<String> favoriteArtists = new DefaultListModel<String>();
 
 	public MainWindow() {
+		
 		initialize();
-			EventQueue.invokeLater(new Runnable() {
-				public void run() {
-					try {
-						refreshArtists();
-					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} 
-				}}); 
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					refreshArtists();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} 
+			}
+		}); 
 		
 	}
 
 	private void initialize() {
 			
-		
 		//Set up overall frame
 		frame = new JFrame();
 		frame.getContentPane().setBackground(SystemColor.activeCaptionText);
-		frame.setBackground(Color.RED);
+		frame.setBackground(Color.WHITE);
 		frame.setBounds(100, 100, 900, 700);
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -96,7 +102,6 @@ public class MainWindow {
 				add.setVisible(true);
 			}
 		});
-		
 		addArtistButton.setForeground(new Color(0, 153, 0));
 		
 		JScrollPane musicPane = new JScrollPane();
@@ -105,12 +110,19 @@ public class MainWindow {
 		musicPanel.add(musicPane);
 		musicPane.setPreferredSize(new Dimension(300, 400));
 		
+		
 		JList<String> musicList = new JList<String>();
 		musicList.setBorder(new LineBorder(SystemColor.menu, 1, true));
 		musicList.setForeground(Color.WHITE);
 		musicList.setBackground(Color.GRAY);
 		musicPane.setViewportView(musicList);
-		
+		MouseListener ml = new MouseAdapter() {
+		      public void mouseClicked(MouseEvent e) {
+		    	  openLink(musicList); 
+		      }
+		    };
+		musicList.addMouseListener(ml);
+		    
 		JButton refreshButton = new JButton("Refresh");
 		refreshButton.setOpaque(true);
 		refreshButton.setBackground(Color.GRAY);
@@ -142,8 +154,6 @@ public class MainWindow {
 				DbConnect db = new DbConnect(); 
 				Connection conn = (Connection) db.Connect();
 				try {
-					
-					//DELETE FROM orders WHERE id_users = 1 AND id_product = 2 LIMIT 1
 					String query = "DELETE FROM artists WHERE artist = '" + artistList.getSelectedValue() + "' LIMIT 1"; 
 					PreparedStatement preparedStmt = (PreparedStatement) conn.prepareStatement(query);
 					preparedStmt.execute(); 
@@ -151,7 +161,6 @@ public class MainWindow {
 					refreshArtists();
 					conn.close(); 
 				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} 
 				
@@ -159,14 +168,11 @@ public class MainWindow {
 		});
 		removeArtistButton.setForeground(new Color(255, 0, 0));
 		
-		
 		//news tab
 		JPanel newsPanel = new JPanel();
 		tabbedPane.addTab("News", null, newsPanel, null);
 		
 		frame.setVisible(true);
-		
-
 	}
 	
 	public static void refreshArtists() throws SQLException {
@@ -182,15 +188,14 @@ public class MainWindow {
 				favoriteArtists.addElement(artist);
 			}
 		}
-		
 		System.out.println(favoriteArtists); 
 		conn.close();
-		}
+	}
 	
 	public void outputMixtapesHnHH(DefaultListModel<String> items, Elements values) {
 		for (Element element: values) {
 			String artist = element.text(); 
-			if (favoriteArtists.contains(artist)){
+			if (favoriteArtists.contains(artist)) {
 				items.addElement("There is a new mixtape by " + artist); 
 				items.addElement("www.HotNewHipHop.com" + element.parent().siblingElements().first().attr("href"));
 			}
@@ -201,10 +206,8 @@ public class MainWindow {
 		for (Element element: values) {
 			String artist = element.text(); 
 			if (favoriteArtists.contains(artist)) {
-				
 				items.addElement("There is a new song by " + artist); 
 				items.addElement("www.HotNewHipHop.com" + element.parent().siblingElements().first().attr("href"));
-				
 			}
 		}
 	}
@@ -220,14 +223,29 @@ public class MainWindow {
 	}
 	
 	public void outputAll(DefaultListModel<String> items, Elements values) {
-
 		values = GetMusic.getMixtapesHnHH(); 
 		outputMixtapesHnHH(items, values); 
 		values = GetMusic.getSongsHnHH(); 
 		outputSongsHnHH(items, values); 
 		values = GetMusic.getMixtapesDatpiff();
 		outputMixtapesDatpiff(items, values); 
-		
 	}
+	
+	private void openLink(JList<String> musicList) {
+		String url = null; 
+  	  	if (musicList.getSelectedValue().contains("www")) {
+  	  		url = "http://" + (String)musicList.getSelectedValue();
+  	  		try {
+						Desktop.getDesktop().browse(new URI(url));
+					} catch (IOException e1) {
+					// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (URISyntaxException e1) {
+					// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+  	  		}
+  	  
+		}
 }
 
