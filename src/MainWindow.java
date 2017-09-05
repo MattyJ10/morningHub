@@ -217,7 +217,8 @@ public class MainWindow {
 			String artist = element.text(); 
 			if (favoriteArtists.contains(artist)) {
 				items.addElement("There is a new mixtape by " + artist);
-				items.addElement("www.Datpiff.com" + element.parent().child(0).attr("href")); 
+				System.out.println(element.parent().child(1).child(0).attr("href"));
+				items.addElement("www.Datpiff.com" + element.parent().child(1).child(0).attr("href")); 
 			}
 		}
 	}
