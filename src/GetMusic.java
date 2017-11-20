@@ -10,8 +10,9 @@ import org.jsoup.select.Elements;
 public class GetMusic {
 
 	public static void main(String[] args) throws SQLException {
-		new MainWindow();
-		
+		LoginWindow w = new LoginWindow(); 
+		w.setVisible(true);
+		//new MainWindow(); 
 		
 	}
 	

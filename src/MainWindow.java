@@ -68,7 +68,6 @@ public class MainWindow {
 		frame.getContentPane().add(tabbedPane);
 		tabbedPane.setPreferredSize(new Dimension(900, 650));
 		
-		
 		//Music tab
 		JPanel musicPanel = new JPanel();
 		musicPanel.setBackground(Color.BLACK);
@@ -132,9 +131,7 @@ public class MainWindow {
 			public void mouseClicked(MouseEvent e) {
 				Elements values = new Elements(); 
 				DefaultListModel<String> items = new DefaultListModel<String>();
-				
 				outputAll(items, values); 
-				
 				musicList.setModel(items);
 			}
 		});
@@ -144,10 +141,6 @@ public class MainWindow {
 		removeArtistButton.setBackground(Color.GRAY);
 		removeArtistButton.setBounds(285, 575, 314, 29);
 		musicPanel.add(removeArtistButton);
-		removeArtistButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
 		removeArtistButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -217,7 +210,6 @@ public class MainWindow {
 			String artist = element.text(); 
 			if (favoriteArtists.contains(artist)) {
 				items.addElement("There is a new mixtape by " + artist);
-				System.out.println(element.parent().child(1).child(0).attr("href"));
 				items.addElement("www.Datpiff.com" + element.parent().child(1).child(0).attr("href")); 
 			}
 		}
