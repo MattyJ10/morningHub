@@ -1,25 +1,12 @@
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
-import com.mysql.jdbc.Connection;
-import com.mysql.jdbc.PreparedStatement;
-
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.lang.CharSequence;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowEvent; 
+import java.awt.event.MouseEvent; 
 
 public class CreateAccountWindow extends JFrame {
 
@@ -86,7 +73,6 @@ public class CreateAccountWindow extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (emailText.getText().contains(Character.toString('@')) && passwordText.getText().equals(confirmPasswordText.getText())) {
-					System.out.println("Made it  here"); 
 					DbConnect db = new DbConnect(); 
 					java.sql.Connection conn = db.Connect();
 					try {

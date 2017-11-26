@@ -23,12 +23,8 @@ import java.sql.SQLException;
 import javax.swing.ListSelectionModel;
 import java.awt.Color;
 import java.awt.Desktop;
-
 import javax.swing.border.LineBorder;
 import javax.swing.ScrollPaneConstants;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.awt.SystemColor;
 
 public class MainWindow {
@@ -168,6 +164,7 @@ public class MainWindow {
 		frame.setVisible(true);
 	}
 	
+	//edit this to be unique for each individual user
 	public static void refreshArtists() throws SQLException {
 		DbConnect db = new DbConnect(); 
 		Connection conn = (Connection) db.Connect(); 

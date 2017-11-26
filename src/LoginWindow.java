@@ -1,6 +1,3 @@
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -11,9 +8,15 @@ import javax.swing.JButton;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class LoginWindow extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField emailTextField;
 	private JTextField passwordTextField;
@@ -55,10 +58,23 @@ public class LoginWindow extends JFrame {
 		btnLogin.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				//Check database for email/password combo
-				//if it's a match, open the main window
-				//load an already existing list (may have to be done in the setup for MainWindow).
-				new MainWindow(); 
+				DbConnect db = new DbConnect(); 
+				java.sql.Connection conn = db.Connect();
+				try {
+					String query = "SELECT email, password FROM musicApp.users where email = (?)";
+					java.sql.PreparedStatement preparedStmt = conn.prepareStatement(query);
+					preparedStmt.setString(1, emailTextField.getText());
+					ResultSet rs = preparedStmt.executeQuery();
+					if (rs.next() && rs.getString("password").equals(passwordTextField.getText())) {
+						new MainWindow(); 
+						dispose();
+					} else {
+						System.out.println("error"); 
+					}
+					//System.out.println(rs); 
+				} catch(SQLException e1) {
+					e1.printStackTrace();
+				}
 			}
 		});
 		btnLogin.setBounds(113, 201, 117, 29);
@@ -70,6 +86,7 @@ public class LoginWindow extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				CreateAccountWindow w = new CreateAccountWindow(); 
 				w.setVisible(true);
+				
 			}
 		});
 		btnCreateAccount.setBounds(242, 201, 134, 29);
