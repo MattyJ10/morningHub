@@ -10,6 +10,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.swing.JPasswordField;
 
 public class LoginWindow extends JFrame {
 
@@ -19,7 +20,7 @@ public class LoginWindow extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField emailTextField;
-	private JTextField passwordTextField;
+	private JPasswordField passwordTextField;
 	private JLabel emailLabel;
 	private JLabel passwordLabel;
 
@@ -39,7 +40,7 @@ public class LoginWindow extends JFrame {
 		contentPane.add(emailTextField);
 		emailTextField.setColumns(10);
 		
-		passwordTextField = new JTextField();
+		passwordTextField = new JPasswordField();
 		passwordTextField.setColumns(10);
 		passwordTextField.setBounds(186, 139, 134, 28);
 		contentPane.add(passwordTextField);
@@ -55,32 +56,42 @@ public class LoginWindow extends JFrame {
 		contentPane.add(passwordLabel);
 		
 		JButton btnLogin = new JButton("Login");
+		btnLogin.setBounds(113, 201, 117, 29);
+		contentPane.add(btnLogin);
 		btnLogin.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				DbConnect db = new DbConnect(); 
 				java.sql.Connection conn = db.Connect();
 				try {
+					//find password connected to entered email from database
 					String query = "SELECT email, password FROM musicApp.users where email = (?)";
 					java.sql.PreparedStatement preparedStmt = conn.prepareStatement(query);
 					preparedStmt.setString(1, emailTextField.getText());
 					ResultSet rs = preparedStmt.executeQuery();
-					if (rs.next() && rs.getString("password").equals(passwordTextField.getText())) {
+					
+					//get the entered text as a char array then convert it to a string to 
+					//test against value in database
+					char[] enteredText = passwordTextField.getPassword();
+					String enteredString = new String(enteredText); 
+					if (rs.next() && rs.getString("password").equals(enteredString)) {
 						new MainWindow(); 
+						conn.close();
 						dispose();
 					} else {
+						conn.close();
 						System.out.println("error"); 
 					}
-					//System.out.println(rs); 
 				} catch(SQLException e1) {
 					e1.printStackTrace();
 				}
 			}
 		});
-		btnLogin.setBounds(113, 201, 117, 29);
-		contentPane.add(btnLogin);
+
 		
 		JButton btnCreateAccount = new JButton("Create Account");
+		btnCreateAccount.setBounds(242, 201, 134, 29);
+		contentPane.add(btnCreateAccount);
 		btnCreateAccount.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -89,8 +100,6 @@ public class LoginWindow extends JFrame {
 				
 			}
 		});
-		btnCreateAccount.setBounds(242, 201, 134, 29);
-		contentPane.add(btnCreateAccount);
 		
 		JLabel titleLabel = new JLabel("Morning Hub");
 		titleLabel.setFont(new Font("Lucida Grande", Font.ITALIC, 20));
