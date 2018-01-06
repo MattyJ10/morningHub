@@ -65,7 +65,7 @@ public class LoginWindow extends JFrame {
 				java.sql.Connection conn = db.Connect();
 				try {
 					//find password connected to entered email from database
-					String query = "SELECT email, password FROM musicApp.users where email = (?)";
+					String query = "SELECT email, password FROM musicApp.Users where email = (?)";
 					java.sql.PreparedStatement preparedStmt = conn.prepareStatement(query);
 					preparedStmt.setString(1, emailTextField.getText());
 					ResultSet rs = preparedStmt.executeQuery();

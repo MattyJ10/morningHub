@@ -4,7 +4,9 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Random;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent; 
 
@@ -75,11 +77,13 @@ public class CreateAccountWindow extends JFrame {
 				if (emailText.getText().contains(Character.toString('@')) && passwordText.getText().equals(confirmPasswordText.getText())) {
 					DbConnect db = new DbConnect(); 
 					java.sql.Connection conn = db.Connect();
+					int id = generateID();
 					try {
-						String query = "insert into users (email, password)" + " values (?, ?)";
+						String query = "insert into Users (ID, email, password)" + " values (?, ?, ?)";
 						java.sql.PreparedStatement preparedStmt = conn.prepareStatement(query);
-						preparedStmt.setString (1, emailText.getText());
-					    preparedStmt.setString (2, passwordText.getText());
+						preparedStmt.setInt(1, id);
+						preparedStmt.setString (2, emailText.getText());
+					    preparedStmt.setString (3, passwordText.getText());
 					    preparedStmt.executeUpdate();
 					    conn.close();
 					    new MainWindow(); 
@@ -105,5 +109,38 @@ public class CreateAccountWindow extends JFrame {
 		confirmPasswordText.setColumns(10);
 		confirmPasswordText.setBounds(181, 167, 134, 28);
 		contentPane.add(confirmPasswordText);
+		
+	}
+	
+	private int generateID() {
+		DbConnect db = new DbConnect(); 
+		java.sql.Connection conn = db.Connect();
+		int ret = 0;
+		Random r = new Random();
+		Boolean x = true;
+		while(x) {
+			int test = r.nextInt();
+			String query = "select id from Users where id = " + test;
+			try {
+				java.sql.PreparedStatement stmt = conn.prepareStatement(query);
+				ResultSet rs = stmt.executeQuery();
+				System.out.println(rs);
+				if (!rs.first()) {
+					ret = test;
+					x = false;
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		try {
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ret; 
 	}
 }

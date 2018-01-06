@@ -40,6 +40,7 @@ public class AddArtistWindow extends JFrame {
 		lblArtistName.setBounds(30, 132, 93, 16);
 		getContentPane().add(lblArtistName);
 		
+		//change this to add the unique ID
 		JButton btnAddArtist = new JButton("Add");
 		btnAddArtist.addMouseListener(new MouseAdapter() {
 			@Override
