@@ -1,5 +1,6 @@
 import java.awt.Font;
 
+
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -10,9 +11,9 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-
+import java.util.Random;
 public class AddArtistWindow extends JFrame {
 
 	/**
@@ -45,12 +46,17 @@ public class AddArtistWindow extends JFrame {
 		btnAddArtist.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				int userid = GetMusic.getUserId(); 
+				int id = AddArtistWindow.generateID(); 
 				DbConnect db = new DbConnect(); 
 				Connection conn = (Connection) db.Connect(); 
 				try {
-					Statement stmt = conn.createStatement();
-					stmt.executeUpdate("INSERT into artists (artist) value (\"" + textField.getText() + "\")");
-					setVisible(false);
+					String query = "INSERT into artists (id, userid, artist)" + " values (?, ?, ?)";
+					java.sql.PreparedStatement preparedStmt = conn.prepareStatement(query);
+					preparedStmt.setInt(1, id);
+					preparedStmt.setInt(2, userid);
+					preparedStmt.setString(3, textField.getText());
+					preparedStmt.executeUpdate();
 					MainWindow.refreshArtists();
 					conn.close();
 					dispose(); 
@@ -69,6 +75,38 @@ public class AddArtistWindow extends JFrame {
 		title.setFont(new Font("Charter", Font.PLAIN, 25));
 		getContentPane().add(title);
 	}
+	
+	protected static int generateID() {
+		DbConnect db = new DbConnect(); 
+		java.sql.Connection conn = db.Connect();
+		int ret = 0;
+		Random r = new Random();
+		Boolean x = true;
+		while(x) {
+			int test = r.nextInt();
+			String query = "SELECT id FROM artists WHERE id = " + test;
+			try {
+				java.sql.PreparedStatement stmt = conn.prepareStatement(query);
+				ResultSet rs = stmt.executeQuery();
+				if (!rs.first()) {
+					ret = test;
+					x = false;
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		try {
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ret; 
+	}
+	
 	
 	
 }

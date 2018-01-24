@@ -33,7 +33,6 @@ public class MainWindow {
 	static DefaultListModel<String> favoriteArtists = new DefaultListModel<String>();
 
 	public MainWindow() {
-		
 		initialize();
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -168,17 +167,17 @@ public class MainWindow {
 	public static void refreshArtists() throws SQLException {
 		DbConnect db = new DbConnect(); 
 		Connection conn = (Connection) db.Connect(); 
+		int id = GetMusic.getUserId();
 		//select the data from the webpage and add it to the local list
 		//"SELECT * FROM table_name
 		Statement stmt = (Statement) conn.createStatement(); 
-		ResultSet rs = stmt.executeQuery("SELECT * FROM artists");
+		ResultSet rs = stmt.executeQuery("SELECT artist FROM artists WHERE userid = " + id);
 		while (rs.next()) {
 			String artist = rs.getString("artist"); 
 			if (!favoriteArtists.contains(artist)) {
 				favoriteArtists.addElement(artist);
 			}
 		}
-		System.out.println(favoriteArtists); 
 		conn.close();
 	}
 	

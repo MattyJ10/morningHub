@@ -23,6 +23,7 @@ public class LoginWindow extends JFrame {
 	private JPasswordField passwordTextField;
 	private JLabel emailLabel;
 	private JLabel passwordLabel;
+	protected static String email; 
 
 	/**
 	 * Create the frame.
@@ -75,6 +76,7 @@ public class LoginWindow extends JFrame {
 					char[] enteredText = passwordTextField.getPassword();
 					String enteredString = new String(enteredText); 
 					if (rs.next() && rs.getString("password").equals(enteredString)) {
+						LoginWindow.email = emailTextField.getText(); 
 						new MainWindow(); 
 						conn.close();
 						dispose();
@@ -97,6 +99,7 @@ public class LoginWindow extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				CreateAccountWindow w = new CreateAccountWindow(); 
 				w.setVisible(true);
+				dispose(); 
 				
 			}
 		});

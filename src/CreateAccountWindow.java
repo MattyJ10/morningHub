@@ -20,6 +20,7 @@ public class CreateAccountWindow extends JFrame {
 	private JTextField emailText;
 	private JTextField passwordText;
 	private JTextField confirmPasswordText;
+	protected static String email; 
 
 	/**
 	 * Launch the application.
@@ -65,6 +66,8 @@ public class CreateAccountWindow extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				setVisible(false);
 				dispose();
+				LoginWindow w = new LoginWindow(); 
+				w.setVisible(true);
 			}
 		});
 		btnCancel.setBounds(91, 223, 117, 29);
@@ -75,6 +78,7 @@ public class CreateAccountWindow extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (emailText.getText().contains(Character.toString('@')) && passwordText.getText().equals(confirmPasswordText.getText())) {
+					CreateAccountWindow.email = emailText.getText();
 					DbConnect db = new DbConnect(); 
 					java.sql.Connection conn = db.Connect();
 					int id = generateID();
@@ -86,6 +90,7 @@ public class CreateAccountWindow extends JFrame {
 					    preparedStmt.setString (3, passwordText.getText());
 					    preparedStmt.executeUpdate();
 					    conn.close();
+					    dispose(); 
 					    new MainWindow(); 
 					    //create a new table to hold the users artist data and connect it to the user. << ?
 						
@@ -112,7 +117,7 @@ public class CreateAccountWindow extends JFrame {
 		
 	}
 	
-	private int generateID() {
+	protected static int generateID() {
 		DbConnect db = new DbConnect(); 
 		java.sql.Connection conn = db.Connect();
 		int ret = 0;
@@ -124,7 +129,6 @@ public class CreateAccountWindow extends JFrame {
 			try {
 				java.sql.PreparedStatement stmt = conn.prepareStatement(query);
 				ResultSet rs = stmt.executeQuery();
-				System.out.println(rs);
 				if (!rs.first()) {
 					ret = test;
 					x = false;
