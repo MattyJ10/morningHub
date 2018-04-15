@@ -2,6 +2,9 @@ import java.sql.*;
 
 public class DbConnect {
 
+	/* used to connect to SQL database hosted on my laptop,
+	 * next step is to add socket programming to allow outside users to connect to it.
+	 */
 	public Connection Connect() {
 		
 		try {
